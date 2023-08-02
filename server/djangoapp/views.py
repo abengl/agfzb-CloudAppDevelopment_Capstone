@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import CarModel, CarMake, CarDealer, DealerReview, ReviewPost
-from .restapis import get_dealers_from_cf, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf,post_request  
+from .models import CarModel, CarMake, CarDealer, DealerReview
+from .restapis import get_request, get_dealers_from_cf, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf,post_request  
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -50,6 +50,7 @@ def login_request(request):
 
 # Create a `logout_request` view to handle sign out request
 def logout_request(request):
+    print("Log out the user `{}`".format(request.user.username))
     logout(request)
     return redirect('djangoapp:index')
 
@@ -72,8 +73,11 @@ def registration_request(request):
         except:
             logger.debug("{} is new user".format(username))
         if not user_exist:
-            user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name,
-                                            password=password)
+            user = User.objects.create_user(
+                username=username, 
+                first_name=first_name, 
+                last_name=last_name,
+                password=password)
             login(request, user)
             return redirect("djangoapp:index")
         else:
@@ -104,7 +108,7 @@ def get_dealer_details(request, id):
 
         review_url = "https://us-south.functions.appdomain.cloud/api/v1/web/ac04a426-9d92-4896-af46-d4ff8cdce5aa/dealership-package/get-review"
         reviews = get_dealer_reviews_from_cf(review_url, id=id)
-        print(reviews)
+        print("get_dealer_details:", reviews)
         context["reviews"] = reviews
         
         return render(request, 'djangoapp/dealer_details.html', context)
@@ -139,7 +143,6 @@ def add_review(request, id):
             payload["purchase"] = False
 
             if "purchasecheck" in request.POST:
-
                 if request.POST["purchasecheck"] == 'on':
                     payload["purchase"] = True
 

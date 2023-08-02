@@ -1,17 +1,12 @@
 {% extends "./base.html" %}
 
-{% block menu %}
+{% block menuaddon %}
 <a class="btn btn-secondary" role="button" href="{% url 'djangoapp:add_review' dealer.id%}">Add Review</a>
 {% endblock %}
 
 {% block content %}
 
 <div class="container-fluid my-5 px-5">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-warning" role="alert">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
 
     <h3>Reviews for <b>{{dealer.full_name}}</b></h3>
 
@@ -21,21 +16,27 @@
             <div class="col-auto mb-3">
                 <div class="card">
                     {% if review.sentiment == "positive" %}
-                        <img class="card-img-left" src="{{MEDIA_URL}}/emoji/positive.png" width="36px" height="36px"
-                            alt="Sentiment">
+                    <div class="text-center">
+                        <img class="card-img-centre" src="{{MEDIA_URL}}/emoji/positive.png" width="50px" height="50px" alt="Sentiment">
+                    </div>
                     {% elif review.sentiment == "negative" %}
-                        <img class="card-img-left" src="{{MEDIA_URL}}/emoji/negative.png" width="36px" height="36px"
-                                alt="Sentiment">
-                        {% else %}
-                        <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png" width="36px" height="36px"
-                                alt="Sentiment">
+                    <div class="text-center">
+                        <img class="card-img-centre" src="{{MEDIA_URL}}/emoji/negative.png" width="50px" height="50px" alt="Sentiment">
+                    </div>
+                    {% else %}
+                    <div class="text-center">
+                        <img class="card-img-centre" src="{{MEDIA_URL}}/emoji/neutral.png" width="50px" height="50px" alt="Sentiment">
+                    </div>
                     {% endif %}
                     <div class="card-body bg-light">
-                            {% if review.car_make%}
-                                <h5 class="card-title">{{review.car_make}}, {{review.car_model}} </h5>
-                                <h5 class="card-title">{{review.car_year}}</h5>
-                            {% endif %}
-                            <p class="card-text">{{review.review}}</p>
+                        <!--{% if review.car_make%}
+                        <h5 class="card-title">{{review.car_make}}, {{review.car_model}} </h5>
+                        <h5 class="card-title">{{review.car_year}}</h5>
+                        {% endif %}
+                        <p class="card-text">{{review.review}}</p>-->
+                        <h5 class="card-title"> Reviewed by: {{review.name}} </h5>
+                        <br>
+                        <p class="card-text"> Comment: {{review.review}}</p>
                     </div>
                 </div>
             </div>
