@@ -3,18 +3,39 @@
 {% block content %}
 
 <!--Add a dealer table here -->
-<div class="card text-center my-5">
-    <div class="card-header">
-        <h2 class="card-title mb-0">List of Dealerships</h2>
-    </div>
-    <div class="card-body p-4">
-        <p class="card-text">Dealer A</p>
-        <p class="card-text">Dealer B</p>
-        <p class="card-text">Dealer C</p>
-    </div>
-    <div class="card-footer text-muted">
-        Contact us
-    </div>
+<div class="container-fluid my-5 px-5 table-responsive">
+    <table class="table table-hover" id="table"
+        data-filter-control="true">
+        <thead class="thead-light">
+            <tr>
+                <th class="align-middle text-center" data-field="id">ID</th>
+                <th class="align-middle text-center" data-field="full_name">Dealer Name</th>
+                <th class="align-middle text-center" data-field="city">City</th>
+                <th class="align-middle text-center" data-field="address">Address</th>
+                <th class="align-middle text-center" data-field="zip">Zip</th>
+                <th class="align-middle text-center" data-field="state" data-filter-control="select">State</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dealer in dealership_list %}
+            <tr>
+                <td class="text-center">{{dealer.id}}</td>
+                <td class="text-left">
+                    <a href="{% url 'djangoapp:dealer_details' dealer.id %}">{{dealer.full_name}}</a>
+                </td>   
+                <td class="text-left">{{dealer.city}}</td>
+                <td class="text-left">{{dealer.address}}</td>
+                <td class="text-center">{{dealer.zip}}</td>
+                <td class="text-center">{{dealer.st}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+<script>
+    $(function() {
+      $('#table').bootstrapTable()
+    })
+</script>
 
 {% endblock %}

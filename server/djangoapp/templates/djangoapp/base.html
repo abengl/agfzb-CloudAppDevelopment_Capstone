@@ -45,6 +45,8 @@
                     <ul class="nav navbar-nav">
                         {% if user.is_authenticated %}
                         <li class="nav-item pl-3">
+                            {% block menu %}
+                            {% endblock %}
                             <a class="btn btn-dark" role="button" href="#">({{user.username}})</a>
                             <a class="btn btn-light" role="button" href="{% url 'djangoapp:logout' %}">Logout</a>
                         </li>

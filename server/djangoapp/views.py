@@ -91,7 +91,7 @@ def get_dealerships(request):
         context["dealership_list"] = dealerships
 
         return render(request, 'djangoapp/index.html', context)
-
+        
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, id):
@@ -154,4 +154,3 @@ def add_review(request, id):
             post_request(review_post_url, new_payload, id=id)
 
         return redirect("djangoapp:dealer_details", id=id)
-
