@@ -4,8 +4,9 @@
 
 <form action="{% url 'djangoapp:login' %}"  method="post">
     {% csrf_token %}
-    <div class="container">
+    <div class="container my-3">
         <h1>Login</h1>
+        <hr />
         <div class="form-group">
             <label for="username"><b>User Name</b></label>
             <input
@@ -31,7 +32,7 @@
         {{ message }}
         </div>
         {% endif %}
-        <button class="btn btn-primary" type="submit">Login</button>
+        <button class="btn btn-secondary" type="submit">Login</button>
     </div>
 </form>
 
