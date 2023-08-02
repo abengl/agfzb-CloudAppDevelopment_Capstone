@@ -1,17 +1,23 @@
-{% extends "./base.html" %}
-
-{% block content %}
+{% extends "./base.html" %} {% block content %}
 
 <div class="card text-center my-5">
-    <div class="card-header">
-        <h2 class="card-title mb-0">Contact Us</h2>
-    </div>
-    <div class="card-body p-4">
-        <img src="{{ MEDIA_URL }}/contact.jpg" width="300" height="250" class="rounded float-left ml-2" alt="Aerial Photo of Building by David McBee">
-        <h6 class="card-text mt-5">Address: New Orchard Road, Armonk, New York 10000-1111, United States.</h6>
-        <h6 class="card-text mt-3">Phone Number: 999-999-0000</h6>
-        <h6 class="card-text mt-3">Email: bestcardealership@email.com</h6>
-    </div>
+  <div class="card-header">
+    <h2 class="card-title mb-0">Contact Us</h2>
+  </div>
+  <div class="card-body p-4">
+    <img
+      src="{{ MEDIA_URL }}/contact.jpg"
+      width="300"
+      height="250"
+      class="rounded float-left ml-2"
+      alt="Aerial Photo of Building by David McBee"
+    />
+    <h6 class="card-text mt-5">
+      Address: New Orchard Road, Armonk, New York 10000-1111, United States.
+    </h6>
+    <h6 class="card-text mt-3">Phone Number: 999-999-0000</h6>
+    <h6 class="card-text mt-3">Email: bestcarsdealership@email.com</h6>
+  </div>
 </div>
 
 {% endblock %}
