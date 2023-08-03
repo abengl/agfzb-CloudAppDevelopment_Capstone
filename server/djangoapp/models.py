@@ -75,7 +75,7 @@ class DealerReview:
         self.car_make = ""
         self.car_model = ""
         self.car_year = ""
-        self.sentiment = ""
+        self.sentiment = sentiment
         self.id = ""
 
     def __str__(self):

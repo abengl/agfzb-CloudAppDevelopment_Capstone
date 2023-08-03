@@ -40,9 +40,13 @@ def get_request(url, **kwargs):
 
 # Create a `post_request` to make HTTP POST requests
 def post_request(url, payload, **kwargs):
+    print("------------------------------------------------------\n")
     print("restapis --- post_request kwargs ---", kwargs)
+    print("------------------------------------------------------\n")
     print("POST to {} ".format(url))
+    print("------------------------------------------------------\n")
     print("restapis --- post_request payload ---", payload)
+    print("------------------------------------------------------\n")
 
     response = requests.post(url, params=kwargs, json=payload)
     status_code = response.status_code
@@ -63,14 +67,13 @@ def get_dealers_from_cf(url, **kwargs):
 
     if json_result:
         # Get the row list in JSON as dealers
+        print("------------------------------------------------------\n")
         print("restapis --- get_dealesr_from_cf --- Dealers", json_result)
+        print("------------------------------------------------------\n")
         dealers = json_result
-        # For each dealer object
+
         for dealer in dealers:
-            # Get its content in `doc` object
             dealer_doc = dealer["doc"]
-            print("restapis --- get_dealesr_from_cf --- Dealer", dealer_doc)
-            # Create a CarDealer object with values in `doc` object
             dealer_obj = CarDealer(
                 address=dealer_doc["address"],
                 city=dealer_doc["city"],
@@ -89,7 +92,9 @@ def get_dealers_from_cf(url, **kwargs):
 # Create a get_dealer_by_id_from_cf method to get dealers from the cloud function by dpecific parameter
 def get_dealer_by_id_from_cf(url, id):
     json_result = get_request(url, id=id)
+    print("------------------------------------------------------\n")
     print("restapis --- get_dealer_by_id_from_cf --- GET", json_result)
+    print("------------------------------------------------------\n")
 
     if json_result:
         dealers = json_result
@@ -112,43 +117,51 @@ def get_dealer_reviews_from_cf(url, **kwargs):
         json_result = get_request(url, id=id)
     else:
         json_result = get_request(url)
-    print("!!!restapis --- get_dealer_reviews_from_cf --- GET !!!", json_result)
+    print("------------------------------------------------------\n")
+    print("restapis --- get_dealer_reviews_from_cf --- json_results ---", json_result)
+    print("------------------------------------------------------\n")
     if json_result:
         reviews = json_result["data"]["docs"]
-        for dealer_review in reviews:
-            review_obj = DealerReview(
-                dealership=dealer_review["dealership"],
-                name=dealer_review["name"],
-                purchase=dealer_review["purchase"],
-                review=dealer_review["review"],
-                purchase_date=dealer_review["purchase_date"],
-                car_make=dealer_review["car_make"],
-                car_model=dealer_review["car_model"],
-                car_year=dealer_review["car_year"],
-                sentiment=analyze_review_sentiments(dealer_review["review"]),
-                id=dealer_review['id']
-            )
-            if "id" in dealer_review:
-                review_obj.id = dealer_review["id"]
-            if "purchase_date" in dealer_review:
-                review_obj.purchase_date = dealer_review["purchase_date"]
-            if "car_make" in dealer_review:
-                review_obj.car_make = dealer_review["car_make"]
-            if "car_model" in dealer_review:
-                review_obj.car_model = dealer_review["car_model"]
-            if "car_year" in dealer_review:
-                review_obj.car_year = dealer_review["car_year"]
+        print("------------------------------------------------------\n")
+        print("restapis --- get_dealer_reviews_from_cf --- json_results ---", reviews)
+        print("------------------------------------------------------\n")
+        for review in reviews:
+            if review["purchase"]:
+                review_obj = DealerReview(
+                    dealership=review["dealership"],
+                    name=review["name"],
+                    purchase=review["purchase"],
+                    review=review["review"],
+                    purchase_date=review["purchase_date"],
+                    car_make=review["car_make"],
+                    car_model=review["car_model"],
+                    car_year=review["car_year"],
+                    sentiment=analyze_review_sentiments(review["review"]),
+                    id=review['id']
+                )
+            else:
+                review_obj = DealerReview(
+                    dealership=review["dealership"],
+                    name=review["name"],
+                    purchase=review["purchase"],
+                    review=review["review"],
+                    purchase_date=None,
+                    car_make=None,
+                    car_model=None,
+                    car_year=None,
+                    sentiment=analyze_review_sentiments(review["review"]),
+                    id=review['id']
+                )
 
-            # sentiment = analyze_review_sentiments(review_obj.review)
+            print("------------------------------------------------------\n")
             print(
-                "!!!restapis --- get_dealer_reviews_from_cf --- sentiment !!!", review_obj.sentiment)
-            # review_obj.sentiment = sentiment
+                "restapis --- get_dealer_reviews_from_cf --- review_obj.sentiment ---", review_obj.sentiment)
+            print("------------------------------------------------------\n")
             results.append(review_obj)
     return results
 
+
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-
-
 def analyze_review_sentiments(text):
     url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/b580571e-dc5f-4057-9c7b-47b69ad7640a"
     api_key = "XrCQufGwS5JWH9IkWCNBJxuNgDD5jorJze3uKAj6MKve"
@@ -157,13 +170,11 @@ def analyze_review_sentiments(text):
         version='2021-08-01', authenticator=authenticator)
     natural_language_understanding.set_service_url(url)
 
-    try:
-        response = natural_language_understanding.analyze(text=text, features=Features(
-            sentiment=SentimentOptions(targets=[text]))).get_result()
-        label = response['sentiment']['document']['label']
-    except Exception as e:
-        print("Exception occurred during sentiment analysis:", str(e))
-        label = "unknown"
+    response = natural_language_understanding.analyze( text=text,features=Features(sentiment=SentimentOptions())).get_result()
+    #label=json.dumps(response, indent=2)
+    label = response['sentiment']['document']['label']
 
-    print("!!!restapis --- analyze_review_sentiments --- label !!!", label)
+    print("------------------------------------------------------\n")
+    print("restapis --- analyze_review_sentiments --- label ---", label)
+    print("------------------------------------------------------\n")
     return label
