@@ -104,7 +104,7 @@ def get_dealer_by_id_from_cf(url, id):
     return dealer_obj
 
 
-# Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function (MODIFIED 02/08/23)!!!
+# Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
 def get_dealer_reviews_from_cf(url, **kwargs):
     results = []
     id = kwargs.get("id")
@@ -120,7 +120,14 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                 dealership=dealer_review["dealership"],
                 name=dealer_review["name"],
                 purchase=dealer_review["purchase"],
-                review=dealer_review["review"])
+                review=dealer_review["review"],
+                purchase_date=dealer_review["purchase_date"],
+                car_make=dealer_review["car_make"],
+                car_model=dealer_review["car_model"],
+                car_year=dealer_review["car_year"],
+                sentiment=analyze_review_sentiments(dealer_review["review"]),
+                id=dealer_review['id']
+            )
             if "id" in dealer_review:
                 review_obj.id = dealer_review["id"]
             if "purchase_date" in dealer_review:
@@ -132,10 +139,10 @@ def get_dealer_reviews_from_cf(url, **kwargs):
             if "car_year" in dealer_review:
                 review_obj.car_year = dealer_review["car_year"]
 
-            sentiment = analyze_review_sentiments(review_obj.review)
+            # sentiment = analyze_review_sentiments(review_obj.review)
             print(
-                "!!!restapis --- get_dealer_reviews_from_cf --- sentiment !!!", sentiment)
-            review_obj.sentiment = sentiment
+                "!!!restapis --- get_dealer_reviews_from_cf --- sentiment !!!", review_obj.sentiment)
+            # review_obj.sentiment = sentiment
             results.append(review_obj)
     return results
 
